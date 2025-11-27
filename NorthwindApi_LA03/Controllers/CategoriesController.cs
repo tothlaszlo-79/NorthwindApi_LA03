@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApi_LA03.Data;
 using NorthwindApi_LA03.Domain;
+using NorthwindApi_LA03.DTO;
 
 namespace NorthwindApi_LA03.Controllers
 {
@@ -52,5 +53,54 @@ namespace NorthwindApi_LA03.Controllers
         {
             return _context.Products.Where(p=> p.CategoryId == id);
         }
+
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody] CreateCategoryRequest request) {
+            //Mapping
+            var category = new Category { 
+                CategoryId = request.CategoryId,
+                CategoryName = request.CategoryName,
+                Description = request.Description
+            };
+            
+            _context.Categories.Add(category); //memoria mentés
+            _context.SaveChanges(); //adatbázis oldali mentés
+
+            return Created(string.Empty, null);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCategory(short id, [FromBody] UpdateCategoryRequest request) 
+        {
+            var category = _context.Categories.SingleOrDefault(c => c.CategoryId == id);
+            if (category is null)
+            {
+                return NotFound();
+            }
+            category.CategoryName = request.CategoryName;
+            category.Description = request.Description;
+            _context.Update(category);
+            _context.SaveChanges();
+
+            return Ok();
+
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCategory(short id) { 
+            var category =
+                _context.Categories.SingleOrDefault(c=> c.CategoryId == id);
+
+            if(category is null)
+               return NotFound();
+
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+
+            return NoContent();
+        
+        
+        }
+
     }
 }
