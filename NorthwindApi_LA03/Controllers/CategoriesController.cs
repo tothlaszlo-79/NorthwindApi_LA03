@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApi_LA03.Data;
 using NorthwindApi_LA03.Domain;
@@ -8,6 +9,7 @@ namespace NorthwindApi_LA03.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class CategoriesController : ControllerBase
     {
         private readonly NorthwindContext _context;
@@ -17,7 +19,9 @@ namespace NorthwindApi_LA03.Controllers
             _context = context;
         }
 
+
         [HttpGet]
+        [Authorize]
         public IActionResult GetCategories() 
         { 
             var categories = _context.Categories;
